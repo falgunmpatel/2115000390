@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import axios from "axios";
+import { Input } from "../ui/input";
 
 export function ProductForm() {
   const form = useForm<z.infer<typeof productSchema>>({
@@ -31,22 +32,15 @@ export function ProductForm() {
       category: "Phone",
       sortType: "asc",
       sortVia: "price",
+      min: 1,
+      max: 100000,
     },
   });
 
   async function onSubmit(values: z.infer<typeof productSchema>) {
     try {
       const response = await axios.get(
-        `/api/category/${values.category}/products`,
-        {
-          params: {
-            n: 10,
-            min: 1,
-            max: 100000,
-            sort: values.sortVia,
-            sortType: values.sortType,
-          },
-        }
+        `/api/categories/${values.category}/products/${values.company}?sort=${values.sortVia}&sortType=${values.sortType}&min=${values.min}&max=${values.max}`
       );
       console.log(response.data);
     } catch (error) {
@@ -166,6 +160,40 @@ export function ProductForm() {
                     <SelectItem value="availability">Availability</SelectItem>
                   </SelectContent>
                 </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="min"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Min Price</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  {...field}
+                  className="w-[180px] p-2 border border-gray-300 rounded-md"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="max"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Max Price</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  {...field}
+                  className="w-[180px] p-2 border border-gray-300 rounded-md"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -35,6 +35,8 @@ const productSchema = z.object({
   category: catogoriesSchema,
   sortType: sortTypeSchema,
   sortVia: sortViaSchema,
+  min: z.number(),
+  max: z.number(),
 });
 
 export default productSchema;
