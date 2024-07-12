@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import axios from "axios";
 
 export function ProductForm() {
   const form = useForm<z.infer<typeof productSchema>>({
@@ -28,11 +29,29 @@ export function ProductForm() {
     defaultValues: {
       company: "AMZ",
       category: "Phone",
+      sortType: "asc",
+      sortVia: "price",
     },
   });
 
-  function onSubmit(values: z.infer<typeof productSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof productSchema>) {
+    try {
+      const response = await axios.get(
+        `/api/category/${values.category}/products`,
+        {
+          params: {
+            n: 10,
+            min: 1,
+            max: 100000,
+            sort: values.sortVia,
+            sortType: values.sortType,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -99,6 +118,52 @@ export function ProductForm() {
                     <SelectItem value="Headset">Headset</SelectItem>
                     <SelectItem value="Laptop">Laptop</SelectItem>
                     <SelectItem value="PC">PC</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="sortType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sort Type</FormLabel>
+              <FormControl>
+                <RadioGroup defaultValue="asc" {...field}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="asc" id="asc" />
+                    <Label htmlFor="asc"> Ascending</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="desc" id="desc" />
+                    <Label htmlFor="desc"> Descending</Label>
+                  </div>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="sortVia"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sort Via</FormLabel>
+              <FormControl>
+                <Select {...field}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort Via" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="price">Price</SelectItem>
+                    <SelectItem value="rating">Rating</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="discount">Discount</SelectItem>
+                    <SelectItem value="availability">Availability</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
