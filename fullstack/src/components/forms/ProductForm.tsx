@@ -23,8 +23,11 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";
 import { Input } from "../ui/input";
+import { useState } from "react";
 
 export function ProductForm() {
+  const [products, setProducts] = useState([]);
+
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -40,9 +43,9 @@ export function ProductForm() {
   async function onSubmit(values: z.infer<typeof productSchema>) {
     try {
       const response = await axios.get(
-        `/api/categories/${values.category}/products/${values.company}?sort=${values.sortVia}&sortType=${values.sortType}&min=${values.min}&max=${values.max}`
+        `/api/categories/${values.category}/products?sort=${values.sortVia}&sortType=${values.sortType}&min=${values.min}&max=${values.max}`
       );
-      console.log(response.data);
+      setProducts(response.data);
     } catch (error) {
       console.error(error);
     }
