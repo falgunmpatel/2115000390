@@ -21,8 +21,8 @@ export const catogoriesSchema = z.enum([
 ]);
 
 const productSchema = z.object({
-  Companies: companiesSchema,
-  Categories: catogoriesSchema,
+  company: companiesSchema,
+  category: catogoriesSchema,
 });
 
 export default productSchema;
