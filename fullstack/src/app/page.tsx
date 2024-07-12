@@ -1,7 +1,10 @@
+"use client";
+import { useState } from "react";
 import ProductCard from "@/components/cards/ProductCard";
 import Link from "next/link";
+import Navbar from "@/components/navbar/Navbar";
 
-const products = [
+const productsData = [
   {
     productName: "Product 1",
     price: "100",
@@ -110,20 +113,24 @@ const products = [
 ];
 
 export default function Home() {
+  const [products, setProducts] = useState(productsData);
   return (
-    <div className="grid grid-cols-3 gap-8 max-w-6xl mx-auto pt-16">
-      {products?.map((product, index) => (
-        <Link href={`/${product.productName}`} key={index}>
-          <ProductCard
-            key={product.productName}
-            productName={product.productName}
-            price={product.price}
-            rating={product.rating}
-            discount={product.discount}
-            availability={product.availability}
-          />
-        </Link>
-      ))}
-    </div>
+    <>
+      <Navbar setProducts={setProducts} />
+      <div className="grid grid-cols-3 gap-8 max-w-6xl mx-auto pt-16">
+        {products?.map((product, index) => (
+          <Link href={`/${product.productName}`} key={index}>
+            <ProductCard
+              key={product.productName}
+              productName={product.productName}
+              price={product.price}
+              rating={product.rating}
+              discount={product.discount}
+              availability={product.availability}
+            />
+          </Link>
+        ))}
+      </div>
+    </>
   );
 }
